@@ -3,119 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>體能訓練計畫執行報告</title>
+    <title>學生運動訓練計畫報告</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f4f7f6; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        // 定義圖示組件 (從 Lucide 獲取)
-        const { ClipboardList, Calendar, Dumbbell, Activity, Shield, Anchor, Clock } = lucide;
+        // 修正後的圖示獲取方式
+        const { ClipboardList, Calendar, Dumbbell, Activity, Shield, Anchor, Clock, CheckCircle2 } = lucide;
+
+        const TrainingTable = ({ title, data, dayBadge, subtitle }) => (
+            <div className="mb-10">
+                <h2 className="text-xl font-bold text-[#2980b9] bg-[#ecf0f1] p-3 border-l-4 border-[#2980b9] mb-4 flex items-center gap-2">
+                    <span className="bg-[#2980b9] text-white text-xs px-2 py-1 rounded">{dayBadge}</span>
+                    {title}
+                </h2>
+                <div className="mb-6">
+                    <h3 className="text-lg font-bold text-[#16a085] mb-3 flex items-center gap-2">
+                        <CheckCircle2 className="w-5 h-5" /> {subtitle}
+                    </h3>
+                    <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+                        <table className="w-full text-sm text-left">
+                            <thead className="text-xs text-white uppercase bg-[#34495e]">
+                                <tr>
+                                    <th className="px-4 py-3 w-1/2">項目</th>
+                                    <th className="px-4 py-3 w-1/4">組數/次數</th>
+                                    <th className="px-4 py-3 w-1/4">重點</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                                {data.map((item, idx) => (
+                                    <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                                        <td className="px-4 py-3 font-medium">{item.name}</td>
+                                        <td className="px-4 py-3">{item.sets}</td>
+                                        <td className={`px-4 py-3 ${item.highlight ? 'text-red-500 font-bold' : 'text-gray-600'}`}>
+                                            {item.note}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        );
 
         function TrainingReport() {
-            const Icon = ({ name: IconComponent, className }) => {
-                return <IconComponent className={className} />;
-            };
+            const day1Mobility = [
+                { name: "青蛙趴髖部動態伸展", sets: "2 x 8", note: "深層感受" },
+                { name: "青蛙趴單腳動態伸展", sets: "2 x 8", note: "雙側執行" },
+                { name: "跪姿胸椎活動度", sets: "2 x 8", note: "雙側執行" },
+                { name: "最偉大伸展", sets: "2 x 8", note: "全身喚醒" },
+                { name: "跪姿弓箭步(向上/左右)", sets: "2 x 8", note: "雙側執行" },
+                { name: "肩部環繞 & 滾筒活動", sets: "2 x 8", note: "改善活動度" },
+                { name: "蜘蛛人式背闊肌伸展", sets: "2 x 5", note: "側鍊延伸" }
+            ];
+
+            const day1Strength = [
+                { name: "基礎深蹲 + 彈力繩", sets: "3 x 8", note: "3秒下1秒停", highlight: true },
+                { name: "伏地挺身", sets: "3 x 8", note: "3秒下1秒停", highlight: true },
+                { name: "單腳臀橋", sets: "3 x 8", note: "3秒下1秒停", highlight: true },
+                { name: "俯身下拉", sets: "3 x 8", note: "背部發力" },
+                { name: "弓步地雷管肩推", sets: "3 x 8", note: "核心穩定" }
+            ];
+
+            const day2Strength = [
+                { name: "壺鈴提舉", sets: "3 x 8", note: "髖鉸鏈模式" },
+                { name: "伏地挺身", sets: "3 x 8", note: "3秒下1秒停", highlight: true },
+                { name: "分腿深蹲", sets: "3 x 8", note: "3秒下1秒停", highlight: true },
+                { name: "引體向上 (倒階)", sets: "3 x 8", note: "背部收縮" },
+                { name: "分腿壺鈴肩推", sets: "3 x 8", note: "平衡挑戰" }
+            ];
 
             return (
-                <div className="min-h-screen bg-[#f4f7f6] p-4 md:p-8 text-slate-800">
-                    <div className="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-md">
-                        
-                        {/* Header */}
-                        <header className="mb-8 text-center border-b-4 border-[#3498db] pb-4">
+                <div className="min-h-screen p-4 md:p-8">
+                    <div className="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-lg">
+                        <header className="mb-8 text-center border-b-4 border-[#3498db] pb-6">
                             <h1 className="text-3xl md:text-4xl font-bold text-[#2c3e50] flex items-center justify-center gap-3">
-                                <ClipboardList className="w-8 h-8 md:w-10 md:h-10 text-[#3498db]" />
-                                體能訓練計畫執行報告
+                                <ClipboardList size={40} className="text-[#3498db]" />
+                                體能訓練計畫報告
                             </h1>
                         </header>
 
-                        {/* Info Box */}
-                        <div className="bg-[#fdf2e9] border-l-4 border-[#e67e22] p-5 rounded-r-lg mb-8 shadow-sm">
+                        <div className="bg-[#fdf2e9] border-l-4 border-[#e67e22] p-5 rounded-r-lg mb-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-start gap-2">
-                                    <Calendar className="w-5 h-5 text-[#e67e22] mt-0.5" />
-                                    <div>
-                                        <span className="font-bold block text-[#d35400]">訓練週期</span>
-                                        <span>雙日循環（Day 1 / Day 2）</span>
-                                    </div>
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="text-[#e67e22]" size={20} />
+                                    <span className="font-bold">週期：雙日循環</span>
                                 </div>
-                                <div className="flex items-start gap-2">
-                                    <Dumbbell className="w-5 h-5 text-[#e67e22] mt-0.5" />
-                                    <div>
-                                        <span className="font-bold block text-[#d35400]">必備器材</span>
-                                        <span>短拉力帶、長彈力帶、滾筒、網球（學生自備）</span>
-                                    </div>
+                                <div className="flex items-center gap-2">
+                                    <Dumbbell className="text-[#e67e22]" size={20} />
+                                    <span className="font-bold text-sm">器材：彈力帶、滾筒、網球</span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Core Goals */}
-                        <section className="mb-10">
-                            <h2 className="text-xl font-bold text-[#2980b9] bg-[#ecf0f1] p-3 border-l-4 border-[#2980b9] mb-6 flex items-center gap-2">
-                                <Activity className="w-6 h-6" />
-                                一、 訓練核心目標
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                                    <div className="flex items-center gap-2 mb-2 text-[#16a085]">
-                                        <Activity className="w-5 h-5" />
-                                        <h3 className="font-bold text-lg">活動度</h3>
-                                    </div>
-                                    <p className="text-sm text-slate-600">針對髖、胸椎進行動態伸展，優化幅度。</p>
-                                </div>
-                                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                                    <div className="flex items-center gap-2 mb-2 text-[#16a085]">
-                                        <Shield className="w-5 h-5" />
-                                        <h3 className="font-bold text-lg">穩定性</h3>
-                                    </div>
-                                    <p className="text-sm text-slate-600">強化單側與核心，提升抗干擾能力。</p>
-                                </div>
-                                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                                    <div className="flex items-center gap-2 mb-2 text-[#16a085]">
-                                        <Anchor className="w-5 h-5" />
-                                        <h3 className="font-bold text-lg">控制力</h3>
-                                    </div>
-                                    <p className="text-sm text-slate-600">強調「3秒離心收縮」，建立發力基礎。</p>
-                                </div>
-                            </div>
-                        </section>
+                        <TrainingTable 
+                            dayBadge="DAY 1" 
+                            title="第一天：基礎穩定" 
+                            subtitle="1. 活動度訓練 (限20分)" 
+                            data={day1Mobility} 
+                        />
 
-                        {/* Day 1 */}
-                        <section className="mb-10">
-                            <h2 className="text-xl font-bold text-[#2980b9] bg-[#ecf0f1] p-3 border-l-4 border-[#2980b9] mb-6 flex items-center gap-2">
-                                <span className="bg-[#2980b9] text-white text-xs px-2 py-1 rounded">DAY 1</span>
-                                二、 第一天訓練課表
-                            </h2>
-                            <div className="overflow-x-auto rounded-lg border border-gray-200">
-                                <table className="w-full text-sm text-left">
-                                    <thead className="text-xs text-white uppercase bg-[#34495e]">
-                                        <tr>
-                                            <th className="px-4 py-3">項目</th>
-                                            <th className="px-4 py-3">組數/次數</th>
-                                            <th className="px-4 py-3">備註</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-200">
-                                        <tr><td className="px-4 py-3 font-medium">青蛙趴髖部動態伸展</td><td className="px-4 py-3">2 x 8</td><td className="px-4 py-3 text-gray-500">雙側</td></tr>
-                                        <tr><td className="px-4 py-3 font-medium">最偉大伸展</td><td className="px-4 py-3">2 x 8</td><td className="px-4 py-3 text-gray-500">全身喚醒</td></tr>
-                                        <tr><td className="px-4 py-3 font-medium text-[#2980b9]">基礎深蹲 (彈力繩)</td><td className="px-4 py-3">3 x 8</td><td className="px-4 py-3 text-[#e74c3c] font-bold">3秒下，1秒停</td></tr>
-                                        <tr><td className="px-4 py-3 font-medium text-[#2980b9]">伏地挺身</td><td className="px-4 py-3">3 x 8</td><td className="px-4 py-3 text-[#e74c3c] font-bold">3秒下，1秒停</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
+                        <TrainingTable 
+                            dayBadge="DAY 1" 
+                            title="第一天：肌力訓練" 
+                            subtitle="2. 暖身與主項" 
+                            data={day1Strength} 
+                        />
 
-                        <footer className="mt-12 text-center text-sm text-slate-400 border-t pt-6">
-                            <p>© 2026 體育專案計畫 - 訓練課表報告</p>
+                        <TrainingTable 
+                            dayBadge="DAY 2" 
+                            title="第二天：功能性力量" 
+                            subtitle="1. 肌力主項 (活動度同D1)" 
+                            data={day2Strength} 
+                        />
+
+                        <footer className="mt-12 text-center text-gray-400 text-xs border-t pt-6">
+                            © 2026 體育組長閱覽專用檔案
                         </footer>
                     </div>
                 </div>
